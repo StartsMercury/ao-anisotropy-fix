@@ -1,0 +1,17 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "io.github.startsmercury.ao_anisotropy_fix.mixin.client",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [],
+    "client": [
+        "BlockModelJsonMixin",
+        "ChunkBatchMixin",
+        "ChunkBatch$MeshDataMetadataMixin",
+        "ClientSingletonsMixin",
+        "IntIndexedMeshAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

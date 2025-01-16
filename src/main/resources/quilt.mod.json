@@ -1,0 +1,43 @@
+{
+    "schema_version": 1,
+
+    "quilt_loader": {
+        "group": "${group}",
+        "id": "${modid}",
+        "version": "${version}",
+
+        "intermediate_mappings" : "net.fabricmc:intermediary",
+
+        "metadata": {
+            "name": "${display_name}",
+            "description": "r",
+            "contributors": {
+                "StartsMercury": "Author"
+            },
+
+            "contact": {
+                "issues": "https://github.com/StartsMercury/ao-anisotropy-fix/issues",
+                "sources": "https://github.com/StartsMercury/ao-anisotropy-fix"
+            },
+
+            "icon": "ao-anisotropy-fix/textures/icon.png"
+        },
+
+        "entrypoints": {
+        },
+
+        "depends": [
+            {
+                "id": "cosmicreach",
+                "versions": "*"
+            },
+            {
+                "id": "cosmicquilt",
+                "versions": "*"
+            }
+        ]
+    },
+
+    "mixin": "ao-anisotropy-fix.mixins.json",
+    "access_widener": "ao-anisotropy-fix.accesswidener"
+}

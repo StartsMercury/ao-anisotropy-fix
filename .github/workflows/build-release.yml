@@ -1,0 +1,47 @@
+name: build-release
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Build
+        run: ./gradlew clean jar sourcesJar --refresh-dependencies --rerun -Pbuild.release=true
+
+      - name: Upload Binaries to GitHub Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/*.jar
+          file_glob: true
+
+      - name: Upload Binaries to CRMM
+        uses: StartsMercury/cr-publish@4595a67f80014718a1280d34846eab0040018ec1
+        with:
+          crmm-id: J-sUmTnO6DEFC6d8o4
+          crmm-token: ${{ secrets.CRMM_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          game-version-filter: none
