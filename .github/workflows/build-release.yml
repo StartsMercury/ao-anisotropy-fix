@@ -37,11 +37,3 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/libs/*.jar
           file_glob: true
-
-      - name: Upload Binaries to CRMM
-        uses: StartsMercury/cr-publish@4595a67f80014718a1280d34846eab0040018ec1
-        with:
-          crmm-id: J-sUmTnO6DEFC6d8o4
-          crmm-token: ${{ secrets.CRMM_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          game-version-filter: none
