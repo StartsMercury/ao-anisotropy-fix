@@ -5,9 +5,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import finalforeach.cosmicreach.rendering.ChunkBatch;
-import finalforeach.cosmicreach.rendering.MeshData;
 import finalforeach.cosmicreach.rendering.meshes.IGameMesh;
 import finalforeach.cosmicreach.rendering.meshes.IntIndexedMesh;
+import finalforeach.cosmicreach.rendering.meshes.MeshData;
 import io.github.startsmercury.ao_anisotropy_fix.impl.client.IndexedMeshDataMetadata;
 import java.nio.IntBuffer;
 import org.objectweb.asm.Opcodes;
@@ -32,7 +32,7 @@ public abstract class ChunkBatchMixin {
     @Inject(
         method = {
             "dispose(Z)V",
-            "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/MeshData;)V",
+            "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/meshes/MeshData;)V",
         },
         at = @At(
             value = "INVOKE_ASSIGN",
@@ -86,7 +86,7 @@ public abstract class ChunkBatchMixin {
     }
 
     @Inject(
-        method = "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/MeshData;)V",
+        method = "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/meshes/MeshData;)V",
         at = @At(
             value = "INVOKE",
             shift = At.Shift.AFTER,
@@ -122,7 +122,7 @@ public abstract class ChunkBatchMixin {
     }
 
     @Inject(
-        method = "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/MeshData;)V",
+        method = "rebuildMeshReadFromOldMesh(Lfinalforeach/cosmicreach/rendering/meshes/MeshData;)V",
         at = @At(
             value = "FIELD",
             shift = At.Shift.AFTER,
@@ -182,7 +182,7 @@ public abstract class ChunkBatchMixin {
     }
 
     @ModifyArg(
-        method = "rebuildMesh(Lfinalforeach/cosmicreach/rendering/MeshData;)V",
+        method = "rebuildMesh(Lfinalforeach/cosmicreach/rendering/meshes/MeshData;)V",
         at = @At(
             value = "INVOKE",
             target =
