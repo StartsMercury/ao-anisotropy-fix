@@ -6,10 +6,12 @@
     "mixins": [],
     "client": [
         "BlockModelJsonMixin",
-        "ChunkBatchMixin",
         "ChunkBatch$MeshDataMetadataMixin",
-        "ClientSingletonsMixin",
-        "IntIndexedMeshAccessor"
+        "ChunkBatchMixin",
+        "ChunkMeshGroupMixin",
+        "ExperimentalNaiveZoneRendererMixin",
+        "IntIndexedMeshAccessor",
+        "ItemModelBlockMixin"
     ],
     "injectors": {
         "defaultRequire": 1

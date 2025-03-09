@@ -1,13 +1,14 @@
 package io.github.startsmercury.ao_anisotropy_fix.mixin.client;
 
 import com.badlogic.gdx.utils.IntArray;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import finalforeach.cosmicreach.rendering.ChunkBatch;
-import finalforeach.cosmicreach.rendering.meshes.IGameMesh;
-import finalforeach.cosmicreach.rendering.meshes.IntIndexedMesh;
-import finalforeach.cosmicreach.rendering.meshes.MeshData;
+import finalforeach.cosmicreach.rendering.meshes.*;
+import finalforeach.cosmicreach.rendering.shaders.GameShader;
 import io.github.startsmercury.ao_anisotropy_fix.impl.client.IndexedMeshDataMetadata;
 import java.nio.IntBuffer;
 import org.objectweb.asm.Opcodes;
@@ -28,6 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ChunkBatchMixin {
     @Shadow
     IGameMesh mesh;
+
+    @Shadow
+    GameShader shader;
 
     @Inject(
         method = {
@@ -213,6 +217,48 @@ public abstract class ChunkBatchMixin {
         return meta;
     }
 
+    @WrapOperation(
+        method = "setMeshFromCombined",
+        at = @At(
+            value = "INVOKE",
+            target = """
+                Lfinalforeach/cosmicreach/rendering/meshes/MeshData;          \
+                toSharedIndexMesh(                                            \
+                    Z                                                         \
+                ) Lfinalforeach/cosmicreach/rendering/meshes/SharedIndexMesh; \
+            """
+        )
+    )
+    private SharedIndexMesh unshareIndices(
+        final MeshData instance,
+        final boolean isStatic,
+        final Operation<SharedIndexMesh> original
+    ) {
+        return null;
+    }
+
+    @Inject(
+        method = "setMeshFromCombined",
+        at = @At(
+            value = "FIELD",
+            shift = At.Shift.AFTER,
+            target = "Lfinalforeach/cosmicreach/rendering/ChunkBatch;mesh:Lfinalforeach/cosmicreach/rendering/meshes/IGameMesh;",
+            opcode = Opcodes.PUTFIELD
+        )
+    )
+    private void updateCombinedMesh(
+        final CallbackInfo callback,
+        final @Local(ordinal = 0, argsOnly = true) MeshData combined
+    ) {
+        final var vertexSize = this.shader.allVertexAttributesObj.vertexSize;
+        final var indices = combined.getIndices();
+        if (indices.isEmpty()) {
+            final var numIndices = combined.getVertices().size / (vertexSize / 4) * 6 / 4;
+            indices.addAll(IntIndexData.createQuadIndices(numIndices));
+        }
+        this.mesh = combined.toIntIndexedMesh(true);
+    }
+
     @Inject(
         method = "setMeshFromCombined",
         at = @At(
@@ -232,5 +278,21 @@ public abstract class ChunkBatchMixin {
         if (this.mesh instanceof final IntIndexedMesh mesh) {
             mesh.setIndices(combined.getIndices());
         }
+    }
+
+    @WrapOperation(
+        method = "setMeshFromCombined",
+        at = @At(
+            value = "INVOKE",
+            target =
+                "Lfinalforeach/cosmicreach/rendering/SharedQuadIndexData;allowForNumIndices(IZ)V"
+        )
+    )
+    private void skipIndexDataSynthesis(
+        final int numIndices,
+        final boolean bind,
+        final Operation<Void> original
+    ) {
+        // DO NOTHING
     }
 }
