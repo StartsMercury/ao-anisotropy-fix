@@ -166,6 +166,8 @@ public abstract class ChunkBatchMixin {
         final boolean normalize
     ) {
         final var numInts = bufferSrc.remaining();
+        if (numInts <= 0) return;
+
         arrayDst.ensureCapacity(numInts);
 
         final var items = arrayDst.items;
