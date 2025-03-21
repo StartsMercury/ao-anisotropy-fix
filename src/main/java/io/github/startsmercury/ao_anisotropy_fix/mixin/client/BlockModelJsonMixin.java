@@ -1,13 +1,14 @@
 package io.github.startsmercury.ao_anisotropy_fix.mixin.client;
 
-import com.badlogic.gdx.utils.IntArray;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import finalforeach.cosmicreach.rendering.IMeshData;
 import finalforeach.cosmicreach.rendering.blockmodels.BlockModelJson;
+import finalforeach.cosmicreach.rendering.blockmodels.BlockModelJsonCuboidFace;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -83,6 +84,9 @@ public abstract class BlockModelJsonMixin {
     private void reorderVertices(
         final CallbackInfo callback,
         final @Local(ordinal = 0, argsOnly = true) IMeshData meshData,
+        final @Local(ordinal = 0, argsOnly = true) short[] blockLightLevels,
+        final @Local(ordinal = 0, argsOnly = true) int[] skyLightLevels,
+        final @Local(ordinal = 0) BlockModelJsonCuboidFace face,
         final @Local(ordinal = 6) int aoIdA,
         final @Local(ordinal = 7) int aoIdB,
         final @Local(ordinal = 8) int aoIdC,
@@ -99,7 +103,22 @@ public abstract class BlockModelJsonMixin {
         final int i3 = i3Ref.get();
         final int i4 = i4Ref.get();
 
-        if (aoIdA + aoIdC > aoIdB + aoIdD) {
+        final boolean triangles_abc_cda_else_bcd_abd;
+
+        final var aoDarkened = aoIdA < 3 || aoIdB < 3 || aoIdC < 3 || aoIdD < 3;
+        if (aoDarkened) {
+            // Prioritize AO: opposing dark corners must not connect.
+            triangles_abc_cda_else_bcd_abd = aoIdA + aoIdC > aoIdB + aoIdD;
+        } else {
+            final int a = createKey(blockLightLevels, skyLightLevels, face.vertexIndexA);
+            final int b = createKey(blockLightLevels, skyLightLevels, face.vertexIndexB);
+            final int c = createKey(blockLightLevels, skyLightLevels, face.vertexIndexC);
+            final int d = createKey(blockLightLevels, skyLightLevels, face.vertexIndexD);
+            // Opposing darker lighting must connect.
+            triangles_abc_cda_else_bcd_abd = b > a || b > c || d > a || d > c;
+        }
+
+        if (triangles_abc_cda_else_bcd_abd) {
             indices.add(i1);
             indices.add(i2);
             indices.add(i3);
@@ -114,5 +133,20 @@ public abstract class BlockModelJsonMixin {
             indices.add(i2);
             indices.add(i4);
         }
+    }
+
+    @Unique
+    private static int createKey(
+        final short[] blockLightLevels,
+        final int[] skyLightLevels,
+        final int index
+    ) {
+        final var rgb = blockLightLevels[index];
+        final var a = skyLightLevels[index];
+        final var r = rgb >>> 16 & 0xFF;
+        final var g = rgb >>> 8 & 0xFF;
+        final var b = rgb & 0xFF;
+
+        return a + r + g + b;
     }
 }
