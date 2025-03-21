@@ -5,7 +5,7 @@ import dev.crmodders.cosmicloom.task.tasks.RunClientTask
 object Constants {
     const val GROUP = "io.github.startsmercury"
     const val MODID = "ao-anisotropy-fix"
-    const val VERSION = "0.1.2"
+    const val VERSION = "0.2.0"
 
     const val DISPLAY_NAME = "AO Anisotropy Fix"
 
