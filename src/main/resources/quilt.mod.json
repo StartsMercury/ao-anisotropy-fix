@@ -38,6 +38,5 @@
         ]
     },
 
-    "mixin": "ao-anisotropy-fix.mixins.json",
-    "access_widener": "ao-anisotropy-fix.accesswidener"
+    "mixin": "ao-anisotropy-fix.mixins.json"
 }

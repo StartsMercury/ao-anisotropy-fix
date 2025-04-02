@@ -9,7 +9,7 @@ object Constants {
 
     const val DISPLAY_NAME = "AO Anisotropy Fix"
 
-    const val VERSION_COSMIC_REACH = "0.4.4"
+    const val VERSION_COSMIC_REACH = "0.4.5"
     const val VERSION_JAVA = "17"
 }
 
@@ -29,10 +29,6 @@ base {
 
 if (Project.DEFAULT_VERSION == version) {
     version = createVersionString()
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/ao-anisotropy-fix.accesswidener")
 }
 
 java {

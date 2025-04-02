@@ -5,13 +5,7 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [],
     "client": [
-        "BlockModelJsonMixin",
-        "ChunkBatch$MeshDataMetadataMixin",
-        "ChunkBatchMixin",
-        "ChunkMeshGroupMixin",
-        "ExperimentalNaiveZoneRendererMixin",
-        "IntIndexedMeshAccessor",
-        "ItemModelBlockMixin"
+        "BlockModelJsonMixin"
     ],
     "injectors": {
         "defaultRequire": 1
