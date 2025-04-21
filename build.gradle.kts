@@ -9,7 +9,7 @@ object Constants {
 
     const val DISPLAY_NAME = "AO Anisotropy Fix"
 
-    const val VERSION_COSMIC_REACH = "0.4.6"
+    const val VERSION_COSMIC_REACH = "0.4.7"
     const val VERSION_JAVA = "17"
 }
 
